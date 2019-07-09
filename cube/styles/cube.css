@@ -1,0 +1,30 @@
+html, body{
+  overflow: hidden;
+}
+.cnt{
+  font-family: "Comic Sans MS";
+  margin-top: 8px;
+  height: 40px;
+  font-size: 18px;
+  position: absolute;
+  color: white;
+
+}
+#animate{
+  font-family: "Comic Sans MS";
+  font-size: 18px;
+  height: 50px;
+  width: 130px;
+  margin-left: 20px;
+  background-color: green;
+  color: white;
+  border-color: black;
+  border-radius: 2px;
+}
+
+#animate:hover{
+  height: 52px;
+  width: 132px;
+  box-shadow: 5px 10px 10px grey;
+
+}
