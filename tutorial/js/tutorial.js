@@ -2,6 +2,7 @@
 var speed = .02;// Speed of rotation in degrees per refresh
 var cap = 15; //Number of steps to be animated in trace
 var modifier = 1; // Ratio between border box speeds
+var chop = 10; // Number of updates between vector drawings
 // Initialize Three.js scene
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(
@@ -34,6 +35,7 @@ for(var i = 0; i < 8; i++){
   vertices.push([]);
 }
 var traceMaterial = new THREE.Material({color: 0xff0000});
+var counter = 0;
 
 function animate(){
   requestAnimationFrame( animate ); // Establishes loop
@@ -42,28 +44,31 @@ function animate(){
   cube.rotation.y += speed;
   lines.rotation.x += speed*modifier;
   lines.rotation.y += speed*modifier;
-  // Find vertex positions
-  var vector = [];
-  for(var i = 0; i < 8; i++){
-    vector = cube.geometry.vertices[i].clone();
-    vector.applyMatrix4(cube.matrixWorld);
-    vertices[i].push(vector)
-  }
-  // Draw vectors
-  for(var i = 0; i < vertices.length; i++){
-    var Path = new THREE.Path()
-    for(var j = 1; j < vertices[i].length; j++ ){
-      var lineGeometry = new THREE.Geometry();
-      lineGeometry.vertices.push(vertices[i][j-1], vertices[i][j]);
-      scene.add(new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({color:0x808080})));
-    }
-  }
-  // Cap size of vertices
-  if(vertices[0].length >= cap){
+  if ((counter %chop == 0) && counter <= 1000){
+    // Find vertex positions
+    var vector = [];
     for(var i = 0; i < 8; i++){
-        vertices[i].shift();
+      vector = cube.geometry.vertices[i].clone();
+      vector.applyMatrix4(cube.matrixWorld);
+      vertices[i].push(vector)
+    }
+    // Draw vectors
+    for(var i = 0; i < vertices.length; i++){
+      var Path = new THREE.Path()
+      for(var j = 1; j < vertices[i].length; j++ ){
+        var lineGeometry = new THREE.Geometry();
+        lineGeometry.vertices.push(vertices[i][j-1], vertices[i][j]);
+        scene.add(new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({color:0x808080})));
+      }
+    }
+    // Cap size of vertices
+    if(vertices[0].length >= cap){
+      for(var i = 0; i < 8; i++){
+          vertices[i].shift();
+      }
     }
   }
+  counter += 1;
   // Renders everything in scene to camera
   renderer.render( scene, camera );
 }
